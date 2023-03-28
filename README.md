@@ -2,11 +2,7 @@
 
 # ember-lottie
 
-![CI](https://github.com/qonto/ember-lottie/workflows/CI/badge.svg)
-[![Latest NPM release][npm-badge]][npm-badge-url]
-
-[npm-badge]: https://img.shields.io/npm/v/@qonto/ember-lottie.svg
-[npm-badge-url]: https://www.npmjs.com/package/@qonto/ember-lottie
+Forked from [@qonto/ember-lottie ](https://github.com/qonto/ember-lottie)
 
 Render [lottie](https://github.com/airbnb/lottie-web) after effects animations in [Ember.js](https://emberjs.com).
 
@@ -19,7 +15,7 @@ Render [lottie](https://github.com/airbnb/lottie-web) after effects animations i
 ## Installation
 
 ```
-ember install @qonto/ember-lottie
+ember install @ajanth/ember-lottie
 ```
 
 ## Usage
@@ -34,6 +30,9 @@ ember install @qonto/ember-lottie
   @speed={{500}}
   @containerId={{this.id}}
   @onDataReady={{this.args.onDataReady}}
+  @isPaused={{false}}
+  @isRestarted={{false}}
+  @slowDownFactor={{1}}
 />
 ```
 
@@ -48,9 +47,11 @@ ember install @qonto/ember-lottie
 | path          | string   | the relative path to the animation object (mandatory at least one: `animationData` or `path`)   |
 | loop          | boolean  | by default at `true`, the animation runs forever, at `false`, the animation is played only once |
 | autoplay      | boolean  | by default to `true`, it will play as soon as it's loaded                                       |
-| speed         | number   | `1` is normal speed                                                                             |
+| speed         | number   | `1` is normal speed, supports dynamic udpates                                                   |
 | containerId   | string   | the dom element id on which to render the animation (mandatory)                                 |
 | onDataReady   | function | a function that triggers the Lottie when you want it                                            |
+| isPaused      | boolean  | by default at `false`, toggle this flag to pause/unpause animation                              |
+| isRestarted   | boolean  | by default at `false`, update to true to restart animation (setting to false has no effect)     |
 
 ## Contributing
 

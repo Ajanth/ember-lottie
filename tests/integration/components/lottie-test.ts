@@ -4,14 +4,28 @@ import { clearRender, find, render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import type { TestContext as TestContextBase } from '@ember/test-helpers';
 
-import type { LottieArgs } from '@qonto/ember-lottie/components/lottie';
+import type { LottieArgs } from '@ajanth/ember-lottie/components/lottie';
 
 import window from 'ember-window-mock';
 import { setupWindowMock } from 'ember-window-mock/test-support';
 import * as sinon from 'sinon';
+import { tracked } from '@glimmer/tracking';
+import { later } from '@ember/runloop';
 
 interface TestContext extends TestContextBase {
   args: LottieArgs;
+  testState: TestState;
+}
+
+class TestState {
+  @tracked isPaused = false;
+  @tracked speed = 1;
+}
+
+function timeout(milliseconds = 100): Promise<void> {
+  return new Promise((resolve) => {
+    later(resolve, milliseconds);
+  });
 }
 
 module('Integration | Component | lottie', function (hooks) {
@@ -89,6 +103,38 @@ module('Integration | Component | lottie', function (hooks) {
 
     await clearRender();
     assert.true(removeEventListener.calledOnce);
+  });
+
+  test('it should listen for changes to isPaused, isRestarted and speed', async function (this: TestContext, assert: any) {
+    this.testState = new TestState();
+
+    await render(hbs`
+      <Lottie
+        @path="/data.json"
+        @isPaused={{this.testState.isPaused}}
+        @speed={{this.testState.speed}}
+      />
+    `);
+
+    find('svg');
+
+    assert.dom('[data-test-paused=false]').exists();
+    this.testState.isPaused = true;
+
+    await timeout();
+
+    assert
+      .dom('[data-test-paused=true]')
+      .exists('Animation is paused on demand');
+
+    assert.dom('[data-test-speed]').exists();
+    this.testState.speed = 0.5;
+
+    await timeout();
+
+    assert
+      .dom('[data-test-speed="0.5"]')
+      .exists('Animation speed is updated on demand');
   });
 
   test('it should not autoplay the animation when prefers-reduced-motion is enabled', async function (this: TestContext, assert: any) {

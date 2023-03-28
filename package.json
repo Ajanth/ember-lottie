@@ -1,16 +1,21 @@
 {
-  "name": "@qonto/ember-lottie",
+  "name": "@ajanth/ember-lottie",
   "version": "0.4.0",
-  "description": "Render lottie after effects animations in Ember.js",
+  "description": "Render lottie after effects animations in Ember.js. Forked from @qonto/ember-lottie",
   "keywords": [
     "ember-addon",
     "after effects",
     "animation",
-    "lottie"
+    "lottie",
+    "lottie-web",
+    "ember",
+    "animate",
+    "vector",
+    "graphics"
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:qonto/ember-lottie.git"
+    "url": "git@github.com:Ajanth/ember-lottie.git"
   },
   "license": "MIT",
   "author": "",
@@ -41,8 +46,9 @@
     "ember-cli-babel": "^7.26.11",
     "ember-cli-htmlbars": "^6.1.0",
     "ember-cli-typescript": "^5.1.0",
-    "ember-window-mock": "^0.8.1",
-    "lottie-web": "^5.9.6"
+    "ember-window-mock": "^0.7.2",
+    "lottie-web": "^5.9.6",
+    "yarn-deduplicate": "^6.0.1"
   },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",

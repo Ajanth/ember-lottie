@@ -1,5 +1,10 @@
+
+<h1>{{@isPaused}}</h1>
 <div
   ...attributes
   {{did-insert this.animate}}
+  {{did-update this.updateAnimationState @isPaused @speed @isRestarted}}
+  data-test-paused={{if this.isPaused 'true' 'false'}}
+  data-test-speed={{this.speed}}
   data-test-autoplay={{if this.autoplay 'true' 'false'}}
 ></div>

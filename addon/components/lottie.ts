@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { buildWaiter } from '@ember/test-waiters';
+import { tracked } from '@glimmer/tracking';
 import Ember from 'ember';
 
 import { AnimationItem, LottiePlayer } from 'lottie-web';
@@ -26,12 +27,25 @@ export interface LottieArgs {
   autoplay?: boolean;
   speed?: number;
   containerId?: string;
+  isPaused?: boolean;
+  isRestarted?: boolean;
   onDataReady?: () => void;
 }
 
 export default class LottieComponent extends Component<LottieArgs> {
   private animation?: AnimationItem;
   private mediaQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  @tracked private _isPaused = false;
+  @tracked private _isRestarted = false;
+  @tracked private _speed = 1;
+
+  get isPaused() {
+    return this._isPaused || false;
+  }
+
+  get speed() {
+    return this._speed || 1;
+  }
 
   get autoplay() {
     return this.canAutoplay ?? true;
@@ -82,7 +96,8 @@ export default class LottieComponent extends Component<LottieArgs> {
       },
     });
 
-    const speed = Ember.testing ? 0 : this.args.speed || 1;
+    this._speed = this.args.speed || 1;
+    const speed = Ember.testing ? 0 : this._speed;
     this.animation.setSpeed(speed);
 
     this.mediaQuery?.addEventListener(
@@ -92,6 +107,7 @@ export default class LottieComponent extends Component<LottieArgs> {
   }
 
   willDestroy() {
+    console.log('willDestroy called');
     super.willDestroy();
 
     this.mediaQuery?.removeEventListener(
@@ -101,6 +117,41 @@ export default class LottieComponent extends Component<LottieArgs> {
 
     if (this.animation) {
       this.animation.destroy();
+    }
+  }
+
+  @action
+  updateAnimationState() {
+    if (
+      this.args.isPaused !== undefined &&
+      this.args.isPaused !== this._isPaused
+    ) {
+      this._isPaused = this.args.isPaused;
+      if (this._isPaused) {
+        this.animation?.pause();
+      } else {
+        this.animation?.play();
+      }
+    }
+
+    if (
+      this.args.isRestarted !== undefined &&
+      this.args.isRestarted !== this._isRestarted
+    ) {
+      this._isRestarted = this.args.isRestarted;
+      if (this._isRestarted) {
+        this.animation?.goToAndPlay(0, true);
+        this._isRestarted = false;
+      }
+    }
+
+    if (
+      this.args.speed !== undefined &&
+      this.args.speed !== this._speed &&
+      this.args.speed > 0
+    ) {
+      this._speed = this.args.speed;
+      this.animation?.setSpeed(1 / this._speed);
     }
   }
 
