@@ -151,7 +151,7 @@ export default class LottieComponent extends Component<LottieArgs> {
       this.args.speed > 0
     ) {
       this._speed = this.args.speed;
-      this.animation?.setSpeed(1 / this._speed);
+      this.animation?.setSpeed(this._speed);
     }
   }
 
